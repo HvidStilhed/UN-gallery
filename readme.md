@@ -8,5 +8,3 @@ Node version: 20
 
 ## create the build
     npm run build
-
-## the build location is dist/
