@@ -1,175 +1,310 @@
 :root
-    --un-black: #17191b
-    --un-blue: #00b2e3
-    --un-gray: #dfdfdf
-    --container-width: 1440px
-    --container-padding: 0 16px
-    --spacing-base: 16px
+	--un-black: #17191b
+	--un-blue: #00b2e3
+	--un-gray: #dfdfdf
+	--container-width: 1440px
+	--container-padding: 0 16px
+	--spacing-base: 16px
 
-    @media (min-width: 768px)
-        --container-padding: 0 32px
-    
+	@media (min-width: 768px)
+		--container-padding: 0 32px
+	
 .un-container
-    font-family: Inter, Arial, sans-serif
-    width: var(--container-width)
-    padding: var(--container-padding)
-    max-width: 100%
-    margin-left: auto
-    margin-right: auto
-    box-sizing: border-box
+	font-family: Inter, Arial, sans-serif
+	width: var(--container-width)
+	padding: var(--container-padding)
+	max-width: 100%
+	margin-left: auto
+	margin-right: auto
+	box-sizing: border-box
 
-    .un-h1
-        margin: 0 0 calc(var(--spacing-base) * 1.5)
-        font-size: 48px
-        font-weight: 600
-        line-height: 130%
+	.un-h1
+		margin: 0 0 calc(var(--spacing-base) * 1.5)
+		font-size: 48px
+		font-weight: 600
+		line-height: 130%
 
-    .un-h2
-        font-size: 36px
-        font-weight: 600
-        margin: 0 0 40px
+	.un-h2
+		font-size: 36px
+		font-weight: 600
+		margin: 0 0 40px
 
-    .un-tabs
-        margin: 0 0 calc(var(--spacing-base) * 2)
-        padding: 0 0 var(--spacing-base)
-        list-style-type: none
-        display: flex
-        font-size: 18px
-        font-weight: 500
-        border-bottom: 1px solid var(--un-gray)
+	.un-tabs
+		margin: 0 0 calc(var(--spacing-base) * 2)
+		padding: 0 0 var(--spacing-base)
+		list-style-type: none
+		display: flex
+		font-size: 18px
+		font-weight: 500
+		border-bottom: 1px solid var(--un-gray)
 
-        &__item
-            &:not(:last-child)
-                margin-right: calc(var(--spacing-base) * 1.5)
+		&__item
+			&:not(:last-child)
+				margin-right: calc(var(--spacing-base) * 1.5)
 
-        &__link
-            text-decoration: none
-            color: var(--un-black)
-            transition-duration: .3s
-            padding: 4px 8px
+		&__link
+			text-decoration: none
+			color: var(--un-black)
+			transition-duration: .3s
+			padding: 4px 8px
 
-            &--active,
-            &:hover
-                background-color: var(--un-blue)
-                color: white
-                border-radius: 4px
+			&--active,
+			&:hover
+				background-color: var(--un-blue)
+				color: white
+				border-radius: 4px
 
-    @media (min-width: 992px)
-        .un-tabs
-            margin: 0 0 calc(var(--spacing-base) * 3)
+	@media (min-width: 992px)
+		.un-tabs
+			margin: 0 0 calc(var(--spacing-base) * 3)
 
-.un-slider-wrap
-    margin-bottom: calc(var(--spacing-base) * 4)
-    width: 100%
-    box-sizing: border-box
-    overflow: hidden
+.un-slider
+	margin-bottom: calc(var(--spacing-base) * 4)
+	box-sizing: border-box
+	overflow: hidden
 
-    .un-slider
-        width: calc(var(--container-width) - var(--container-padding) * 2)
-        height: 600px
-        overflow: visible
+	&:hover
+		.flickity-button
+			opacity: 1
 
-        &:hover
+	&__item
+		width: 85%
+		height: 600px
+		max-height: 60vh
+		background-size: cover
+		background-position: center
+		border-radius: 32px
+		margin-right: 24px
 
-            .swiper-button-prev,
-            .swiper-button-next
-                &:not(.swiper-button-disabled)
-                    opacity: 1
-            
 
-        .swiper-slide
-            background-size: cover
-            background-position: center
-            border-radius: 32px
-            width: 90%
-            position: relative
+	.un-slider
+		width: calc(var(--container-width) - var(--container-padding) * 2)
+		height: 600px
+		max-height: 60vh
+		overflow: visible
 
-            &:not(.swiper-slide-active)
-                &:before
-                    content: ''
-                    position: absolute
-                    width: 100%
-                    height: 100%
-                    background: white
-                    opacity: .75
 
-    .swiper-button-prev,
-    .swiper-button-next
-        height: 100%
-        width: 120px
-        top: 0
-        margin: 0
-        background-repeat: no-repeat
-        background-position: center
-        opacity: 0
-        transition: opacity 0.3s ease;
+	.flickity-button
+		height: 100%
+		padding: 0
+		width: 120px
+		top: 0
+		margin: 0
+		background-repeat: no-repeat
+		background-position: center
+		transition: opacity 0.3s ease
+		transform: none
+		display: flex
+		transition-duration: .3s
+		align-items: center
+		justify-content: center
+		box-shadow: none
+		outline: none
 
-        &.swiper-button-disabled
-            opacity: 0
-            transition: none;
+		&::after
+			content: none
 
-        &::after
-            content: none
+		&::before
+			content: ''
+			position: absolute
+			width: 20px
+			height: 40px
+			background-size: cover
+			background-position: center
 
-        &::before
-            content: ''
-            width: 20px
-            height: 40px
-            background-size: cover
-            background-position: center
+		&.previous
+			background: linear-gradient(270deg, rgba(0, 87, 227, 0) 0%, rgba(0, 87, 227, 0.7) 100%)
+			left: 7.5%
+			border-radius: 32px 0 0 32px
+			
+			&::before
+				background-image: url('./img/icons/slider-left.svg')
 
-    .swiper-button-prev
-        background: linear-gradient(270deg, rgba(0, 87, 227, 0) 0%, rgba(0, 87, 227, 0.7) 100%);
-        left: 5%
-        border-radius: 32px 0 0 32px
-        
-        &::before
-            background-image: url('./img/icons/slider-left.svg')
+		&.next
+			background: linear-gradient(90deg, rgba(0, 87, 227, 0) 0%, rgba(0, 87, 227, 0.7) 100%)
+			right: 7.5%
+			border-radius: 0 32px 32px 0
 
-    .swiper-button-next
-        background: linear-gradient(90deg, rgba(0, 87, 227, 0) 0%, rgba(0, 87, 227, 0.7) 100%)
-        right: 5%
-        border-radius: 0 32px 32px 0
+			&::before
+				background-image: url('./img/icons/slider-right.svg')
 
-        &::before
-            background-image: url('./img/icons/slider-right.svg')
+		svg
+			display: none
 
-    @media (min-width: 992px)
-        margin-bottom: calc(var(--spacing-base) * 5)
+	@media (min-width: 992px)
+		margin-bottom: calc(var(--spacing-base) * 5)
 
-    @media (min-width: 1440px)
-        .un-slider-wrap
-            margin-left: calc((100vw - 100%) / -2)
-            padding-left: calc((100vw - 100%) / 2)
-            padding-right: calc((100vw - 100%) / 2)
+	@media (min-width: 1366px)
+		.flickity-button
+			opacity: 0
+
+	@media (max-width: 767px)
+		padding: var(--container-padding)
+
+		&__item
+			width: 100%
+			height: 400px
+		
+		.flickity-button
+			width: 40px
+
+			&.previous
+				left: var(--spacing-base)
+
+			&.next
+				right: var(--spacing-base)
 
 .un-grid
-    display: flex
-    flex-flow: column wrap
-    align-content: space-between
+	display: flex
+	flex-flow: column wrap
+	align-content: space-between
 
-    &__item
-        width: 100%
-        display: flex
-        margin-bottom: var(--spacing-base)
+	&__item
+		width: 100%
+		display: flex
+		margin-bottom: var(--spacing-base)
+		cursor: pointer
 
-        &:nth-child(3n)
-            margin-right: 0 !important
+		&:nth-child(3n)
+			margin-right: 0 !important
 
-        img
-            width: 100%
-            height: auto
+		img
+			width: 100%
+			height: auto
 
-    @media (min-width: 992px)
-        &__item
-            width: calc(33.333% - 21px)
-            margin-bottom: calc(var(--spacing-base) * 2)
+	@media (min-width: 992px)
+		&__item
+			width: calc(33.333% - 21px)
+			margin-bottom: calc(var(--spacing-base) * 2)
 
-    @media (max-width: 991px) and (min-width: 768px)
-        &__item
-            width: calc(50% - calc(var(--spacing-base)))
+	@media (max-width: 991px) and (min-width: 768px)
+		&__item
+			width: calc(50% - calc(var(--spacing-base)))
 
 .un-tab
-    display: none
-    &--active
-        display: block
+	display: none
+	&--active
+		display: block
+
+.un-popup
+	position: fixed
+	top: 0
+	left: 0
+	width: 100%
+	height: 100%
+	background: rgba(0, 0, 0, 0.8)
+	display: flex
+	align-items: center
+	justify-content: center
+	opacity: 0
+	visibility: hidden
+	transition: opacity 0.3s, visibility 0.3s
+	padding: 80px
+	box-sizing: border-box
+
+	&.show
+		opacity: 1
+		visibility: visible
+
+	.un-popup__slider
+		width: 100%
+		height: 100%
+		
+		&-item
+			width: 100%
+			height: 100%
+			display: flex
+			align-items: center
+			justify-content: center
+
+			img
+				max-width: 100%
+				height: auto
+
+	.un-popup__close
+		position: absolute
+		top: 24px
+		right: 24px
+		width: 48px
+		height: 48px
+		background-image: url('./img/icons/close.svg')
+		cursor: pointer
+		border-radius: 50%
+		background-size: cover
+		background-position: center
+		z-index: 1
+
+	.flickity-button
+		height: 40px
+		width: 20px
+		padding: 0
+		top: 50%
+		margin: 0
+		background-repeat: no-repeat
+		background-position: center
+		transition: opacity 0.3s ease
+		transform: none
+		display: flex
+		transition-duration: .3s
+		align-items: center
+		justify-content: center
+		box-shadow: none
+		outline: none
+		transform: translateY(-50%)
+
+		&::after
+			content: none
+
+		&::before
+			content: ''
+			position: absolute
+			width: 20px
+			height: 40px
+			background-size: cover
+			background-position: center
+
+		&.previous
+			background: transparent
+			left: 0
+			margin-left: -48px
+			
+			&::before
+				background-image: url('./img/icons/slider-left.svg')
+
+		&.next
+			background: transparent
+			right: 0
+			margin-right: -48px
+
+			&::before
+				background-image: url('./img/icons/slider-right.svg')
+
+		svg
+			display: none
+
+	@media (max-width: 767px)
+		padding: 0
+
+		.un-popup__close
+			top: 0
+			right: 0
+
+		.flickity-button
+			&.previous
+				margin-left: 12px
+
+			&.next
+				margin-right: 12px
+
+#un-popupCaption
+	bottom: 16px
+	color: white
+	position: absolute
+	font-family: Inter, Arial, sans-serif
+	padding: 4px 8px
+	margin: 0
+	background: #00000045
+	border-radius: 4px
+
+	&:empty
+		display: none
