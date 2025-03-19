@@ -1,0 +1,132 @@
+:root
+    --un-black: #17191b
+    --un-blue: #00b2e3
+    --un-gray: #dfdfdf
+    
+.un-container
+    font-family: Inter, Arial, sans-serif
+    width: 1440px
+    max-width: 100%
+    padding: 0 32px
+    margin-left: auto
+    margin-right: auto
+    box-sizing: border-box
+
+    .un-h1
+        margin: 0 0 24px
+        font-size: 48px
+        font-weight: 600
+        line-height: 130%
+
+    .un-h2
+        font-size: 36px
+        font-weight: 600
+        margin: 0 0 40px
+
+    .un-tabs
+        margin: 0 0 48px
+        padding: 0 0 16px
+        list-style-type: none
+        display: flex
+        font-size: 18px
+        font-weight: 500
+        border-bottom: 1px solid var(--un-gray)
+
+        &__item
+            &:not(:last-child)
+                margin-right: 24px
+
+        &__link
+            text-decoration: none
+            color: var(--un-black)
+            transition-duration: .3s
+            padding: 4px 8px
+
+            &--active,
+            &:hover
+                background-color: var(--un-blue)
+                color: white
+                border-radius: 4px
+
+    .un-slider-wrap
+        margin-bottom: 80px
+        width: 100vw
+        margin-left: -32px
+        box-sizing: border-box
+        overflow: hidden
+
+    .un-slider
+        width: 100%
+        height: 600px
+        overflow: visible
+
+        &:hover
+
+            .swiper-button-prev,
+            .swiper-button-next
+                &:not(.swiper-button-disabled)
+                    opacity: 1
+            
+
+        .swiper-slide
+            background-size: cover
+            background-position: center
+            border-radius: 32px
+            width: 90%
+            position: relative
+
+            &:not(.swiper-slide-active)
+                &:before
+                    content: ''
+                    position: absolute
+                    width: 100%
+                    height: 100%
+                    background: white
+                    opacity: .75
+
+    .swiper-button-prev,
+    .swiper-button-next
+        height: 100%
+        width: 120px
+        top: 0
+        margin: 0
+        background-repeat: no-repeat
+        background-position: center
+        opacity: 0
+        transition: opacity 0.3s ease;
+
+        &.swiper-button-disabled
+            opacity: 0
+            transition: none
+
+        &::after
+            content: none
+
+        &::before
+            content: ''
+            width: 20px
+            height: 40px
+            background-size: cover
+            background-position: center
+
+    .swiper-button-prev
+        background: linear-gradient(270deg, rgba(0, 87, 227, 0) 0%, rgba(0, 87, 227, 0.7) 100%);
+        left: 5%
+        border-radius: 32px 0 0 32px
+        
+        &::before
+            background-image: url('./img/icons/slider-left.svg')
+
+    .swiper-button-next
+        background: linear-gradient(90deg, rgba(0, 87, 227, 0) 0%, rgba(0, 87, 227, 0.7) 100%)
+        right: 5%
+        border-radius: 0 32px 32px 0
+
+        &::before
+            background-image: url('./img/icons/slider-right.svg')
+
+    @media (min-width: 1440px)
+        .un-slider-wrap
+            margin-left: calc((100vw - 100%) / -2)
+            padding-left: calc((100vw - 100%) / 2)
+            padding-right: calc((100vw - 100%) / 2)
