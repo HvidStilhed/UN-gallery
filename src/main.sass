@@ -3,7 +3,11 @@
     --un-blue: #00b2e3
     --un-gray: #dfdfdf
     --container-width: 1440px
-    --container-padding: 0 32px
+    --container-padding: 0 16px
+    --spacing-base: 16px
+
+    @media (min-width: 768px)
+        --container-padding: 0 32px
     
 .un-container
     font-family: Inter, Arial, sans-serif
@@ -15,7 +19,7 @@
     box-sizing: border-box
 
     .un-h1
-        margin: 0 0 24px
+        margin: 0 0 calc(var(--spacing-base) * 1.5)
         font-size: 48px
         font-weight: 600
         line-height: 130%
@@ -26,8 +30,8 @@
         margin: 0 0 40px
 
     .un-tabs
-        margin: 0 0 48px
-        padding: 0 0 16px
+        margin: 0 0 calc(var(--spacing-base) * 2)
+        padding: 0 0 var(--spacing-base)
         list-style-type: none
         display: flex
         font-size: 18px
@@ -36,7 +40,7 @@
 
         &__item
             &:not(:last-child)
-                margin-right: 24px
+                margin-right: calc(var(--spacing-base) * 1.5)
 
         &__link
             text-decoration: none
@@ -50,8 +54,12 @@
                 color: white
                 border-radius: 4px
 
+    @media (min-width: 992px)
+        .un-tabs
+            margin: 0 0 calc(var(--spacing-base) * 3)
+
 .un-slider-wrap
-    margin-bottom: 80px
+    margin-bottom: calc(var(--spacing-base) * 4)
     width: 100%
     box-sizing: border-box
     overflow: hidden
@@ -126,6 +134,9 @@
         &::before
             background-image: url('./img/icons/slider-right.svg')
 
+    @media (min-width: 992px)
+        margin-bottom: calc(var(--spacing-base) * 5)
+
     @media (min-width: 1440px)
         .un-slider-wrap
             margin-left: calc((100vw - 100%) / -2)
@@ -138,9 +149,9 @@
     align-content: space-between
 
     &__item
-        width: calc(33.333% - 21px)
+        width: 100%
         display: flex
-        margin-bottom: 32px
+        margin-bottom: var(--spacing-base)
 
         &:nth-child(3n)
             margin-right: 0 !important
@@ -148,6 +159,15 @@
         img
             width: 100%
             height: auto
+
+    @media (min-width: 992px)
+        &__item
+            width: calc(33.333% - 21px)
+            margin-bottom: calc(var(--spacing-base) * 2)
+
+    @media (max-width: 991px) and (min-width: 768px)
+        &__item
+            width: calc(50% - calc(var(--spacing-base)))
 
 .un-tab
     display: none

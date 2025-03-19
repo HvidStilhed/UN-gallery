@@ -67,7 +67,10 @@ function tabs() {
     const tabLinks = document.querySelectorAll('.un-tabs__link');
     const tabContents = document.querySelectorAll('.un-tab');
 
-    tabLinks.forEach((link) => {
+    tabLinks.forEach((link, i) => {
+        if (i === 0)
+            link.classList.add('un-tabs__link--active')
+
         link.addEventListener('click', (event) => {
             event.preventDefault();
             
@@ -88,6 +91,11 @@ function tabs() {
             }, 100);
         });
     });
+
+    tabContents.forEach((tab, i) => {
+        if (i === 0)
+            tab.classList.add('un-tab--active')
+    })
 }
 
 tabs();
