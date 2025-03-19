@@ -24,6 +24,8 @@
     "webpack-dev-server": "^5.2.0"
   },
   "dependencies": {
+    "masonry-layout": "^4.2.2",
+    "photoswipe": "^5.4.4",
     "swiper": "^11.2.5"
   }
 }

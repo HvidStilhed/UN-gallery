@@ -2,12 +2,14 @@
     --un-black: #17191b
     --un-blue: #00b2e3
     --un-gray: #dfdfdf
+    --container-width: 1440px
+    --container-padding: 0 32px
     
 .un-container
     font-family: Inter, Arial, sans-serif
-    width: 1440px
+    width: var(--container-width)
+    padding: var(--container-padding)
     max-width: 100%
-    padding: 0 32px
     margin-left: auto
     margin-right: auto
     box-sizing: border-box
@@ -48,15 +50,14 @@
                 color: white
                 border-radius: 4px
 
-    .un-slider-wrap
-        margin-bottom: 80px
-        width: 100vw
-        margin-left: -32px
-        box-sizing: border-box
-        overflow: hidden
+.un-slider-wrap
+    margin-bottom: 80px
+    width: 100%
+    box-sizing: border-box
+    overflow: hidden
 
     .un-slider
-        width: 100%
+        width: calc(var(--container-width) - var(--container-padding) * 2)
         height: 600px
         overflow: visible
 
@@ -97,7 +98,7 @@
 
         &.swiper-button-disabled
             opacity: 0
-            transition: none
+            transition: none;
 
         &::after
             content: none
@@ -130,3 +131,25 @@
             margin-left: calc((100vw - 100%) / -2)
             padding-left: calc((100vw - 100%) / 2)
             padding-right: calc((100vw - 100%) / 2)
+
+.un-grid
+    display: flex
+    flex-flow: column wrap
+    align-content: space-between
+
+    &__item
+        width: calc(33.333% - 21px)
+        display: flex
+        margin-bottom: 32px
+
+        &:nth-child(3n)
+            margin-right: 0 !important
+
+        img
+            width: 100%
+            height: auto
+
+.un-tab
+    display: none
+    &--active
+        display: block
