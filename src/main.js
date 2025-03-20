@@ -16,6 +16,8 @@ function initMasonry(container) {
 document.addEventListener('DOMContentLoaded', function () {
     let activeGrid = document.querySelector('.un-tab--active .un-grid');
     let msnry = initMasonry(activeGrid);
+    
+    initMasonry(activeGrid);
 
     function tabs() {
         const tabLinks = document.querySelectorAll('.un-tabs__link');
@@ -32,25 +34,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 tabLinks.forEach(link => link.classList.remove('un-tabs__link--active'));
                 tabContents.forEach(tab => tab.classList.remove('un-tab--active'));
+                console.log(activeGrid)
 
                 link.classList.add('un-tabs__link--active');
                 targetTab.classList.add('un-tab--active');
 
                 // Проверяем, когда `un-tab--active` стал видимым
-                let observer = new MutationObserver(() => {
+                setTimeout(() => {
                     let newGrid = targetTab.querySelector('.un-grid');
                     if (newGrid) {
                         msnry = initMasonry(newGrid);
                     }
-                    observer.disconnect();
-                });
-
-                observer.observe(targetTab, { attributes: true, attributeFilter: ['class'] });
+                }, 100);
             });
         });
 
         tabContents.forEach((tab, i) => {
-            if (i === 0) tab.classList.add('un-tab--active');
+            if (i === 0) {
+                tab.classList.add('un-tab--active');
+                let grid = tab.querySelector('.un-grid')
+                msnry = initMasonry(grid);
+            }
         });
     }
 
