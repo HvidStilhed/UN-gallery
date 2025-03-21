@@ -1,4 +1,7 @@
 import './main.sass';
+import 'flickity/css/flickity.css';
+import Flickity from 'flickity';
+import 'flickity-bg-lazyload';
 
 var Masonry = require('masonry-layout');
 
@@ -14,10 +17,43 @@ function initMasonry(container) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    var elem = document.querySelector('.un-slider');
+    var flkty = new Flickity( elem, {
+        pageDots: false,
+        wrapAround: true,
+        bgLazyLoad: 1
+    });
+    flkty.resize()
+    let flickityBtn = document.querySelectorAll('.flickity-button');
+
+    let flickityInstance = null;
+
     let activeGrid = document.querySelector('.un-tab--active .un-grid');
     let msnry = initMasonry(activeGrid);
     
     initMasonry(activeGrid);
+
+    function flktyButtons(elem) {
+        flickityBtn.forEach(btn => {
+            btn.addEventListener('click', function() {
+                flickityBtn.forEach(btn => btn.style.opacity = '0');
+                flickityBtn.forEach(btn => btn.style.transition = 'none');
+            });
+        });
+    
+        elem.on( 'settle', function() {
+            flickityBtn.forEach(btn => btn.style.transition = '.3s');
+            flickityBtn.forEach(btn => btn.style.opacity = '1');
+        });
+    
+        elem.on( 'dragStart', function() {
+            flickityBtn.forEach(btn => {
+                flickityBtn.forEach(btn => btn.style.opacity = '0');
+                flickityBtn.forEach(btn => btn.style.transition = 'none');
+            });
+        });
+    }
+    flktyButtons(flkty)
 
     function tabs() {
         const tabLinks = document.querySelectorAll('.un-tabs__link');
@@ -34,10 +70,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 tabLinks.forEach(link => link.classList.remove('un-tabs__link--active'));
                 tabContents.forEach(tab => tab.classList.remove('un-tab--active'));
-                console.log(activeGrid)
 
                 link.classList.add('un-tabs__link--active');
                 targetTab.classList.add('un-tab--active');
+
+                flkty.destroy()
+                elem.style.opacity = 0
 
                 // Проверяем, когда `un-tab--active` стал видимым
                 setTimeout(() => {
@@ -45,6 +83,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (newGrid) {
                         msnry = initMasonry(newGrid);
                     }
+                    
+                    flkty = new Flickity( elem, {
+                        pageDots: false,
+                        wrapAround: true,
+                        bgLazyLoad: 1
+                    });
+
+                    flkty.resize()
+
+                    setTimeout(() => {
+                        flickityBtn = document.querySelectorAll('.flickity-button');
+                        flktyButtons(flkty);
+                    }, 10);
+
+                    elem.style.opacity = 1
+                    
                 }, 100);
             });
         });
@@ -59,48 +113,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     tabs();
-});
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    var elem = document.querySelector('.un-slider');
-    var flkty = new Flickity( elem, {
-        pageDots: false,
-        wrapAround: true,
-    });
-
-    const flickityBtn = document.querySelectorAll('.flickity-button');
-
-    flickityBtn.forEach(btn => {
-        btn.addEventListener('click', function() {
-            flickityBtn.forEach(btn => btn.style.opacity = '0');
-            flickityBtn.forEach(btn => btn.style.transition = 'none');
-        });
-    });
-
-    flkty.on( 'settle', function() {
-        flickityBtn.forEach(btn => btn.style.transition = '.3s');
-        flickityBtn.forEach(btn => btn.style.opacity = '1');
-    });
-
-    flkty.on( 'dragStart', function() {
-        flickityBtn.forEach(btn => {
-            flickityBtn.forEach(btn => btn.style.opacity = '0');
-            flickityBtn.forEach(btn => btn.style.transition = 'none');
-        });
-    });
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
     const galleryItems = document.querySelectorAll(".un-grid__item img");
     const sliderItems = document.querySelectorAll(".un-slider__item");
     const popup = document.querySelector(".un-popup");
     const popupSlider = document.querySelector(".un-popup__slider");
     const popupCaption = document.querySelector("#un-popupCaption");
     const closeBtn = document.querySelector(".un-popup__close");
-
-    let flickityInstance = null;
 
     galleryItems.forEach((img, index) => {
         img.addEventListener("click", function () {
@@ -148,19 +167,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     pageDots: false,
                     wrapAround: true,
                     prevNextButtons: true,
-                    draggable: true
+                    draggable: true,
+                    bgLazyLoad: 1
                 });
 
                 // Устанавливаем активное изображение
                 flickityInstance.select(0);  // Нажатое изображение становится первым
 
                 // Обновляем подпись активного изображения
-                updateCaption(flickityInstance.selectedIndex);
+                // updateCaption(flickityInstance.selectedIndex);
 
                 // Слушаем событие смены слайда
-                flickityInstance.on("change", function (index) {
-                    updateCaption(index);
-                });
+                // flickityInstance.on("change", function (index) {
+                //     updateCaption(index);
+                // });
             }, 0);
 
             // Показываем попап
@@ -170,38 +190,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sliderItems.forEach((slide, index) => {
         slide.addEventListener("click", function () {
-            // Получаем все слайды карусели
             const slides = Array.from(document.querySelectorAll(".un-slider__item"));
 
-            // Проверяем, существует ли старый слайдер, и удаляем его
             if (flickityInstance) {
                 flickityInstance.destroy();
                 flickityInstance = null;
             }
 
-            // Полностью очищаем контейнер перед вставкой новых изображений
             popupSlider.innerHTML = "";
 
-            // Переставляем слайды так, чтобы активный был первым
             const reorderedSlides = [
-                ...slides.slice(index),  // Все слайды после активного
-                ...slides.slice(0, index)  // Все слайды до активного
+                ...slides.slice(index),
+                ...slides.slice(0, index)
             ];
 
-            // Добавляем слайды в слайдер
             reorderedSlides.forEach((slide) => {
                 const itemContainer = document.createElement("div");
                 itemContainer.classList.add("un-popup__slider-item");
 
                 const imgClone = document.createElement("img");
-                imgClone.src = slide.style.backgroundImage.slice(5, -2); // Получаем URL из background-image
-                imgClone.title = slide.title || ""; // Если есть alt, то добавляем
+                imgClone.src = slide.style.backgroundImage.slice(5, -2);
+                imgClone.title = slide.title || "";
 
                 itemContainer.appendChild(imgClone);
                 popupSlider.appendChild(itemContainer);
             });
 
-            // Создаем новый экземпляр Flickity
             setTimeout(() => {
                 flickityInstance = new Flickity(popupSlider, {
                     cellAlign: "center",
@@ -213,32 +227,26 @@ document.addEventListener("DOMContentLoaded", function () {
                     draggable: true
                 });
 
-                // Устанавливаем активное изображение (по индексу, на который кликнули)
                 flickityInstance.select(0);  // Нажатое изображение становится первым
 
-                // Обновляем подпись активного изображения
-                updateCaption(flickityInstance.selectedIndex);
+                // updateCaption(flickityInstance.selectedIndex);
 
-                // Слушаем событие смены слайда
-                flickityInstance.on("change", function (index) {
-                    updateCaption(index);
-                });
+                // flickityInstance.on("change", function (index) {
+                //     updateCaption(index);
+                // });
             }, 0);
 
-            // Показываем попап
             popup.classList.add("show");
         });
     });
 
-    // Функция обновления подписи
-    function updateCaption(index) {
-        const activeImg = flickityInstance.cells[index].element.querySelector("img");
-        if (activeImg) {
-            popupCaption.textContent = activeImg.title || "";  // Используем title вместо data-title
-        }
-    }
+    // function updateCaption(index) {
+    //     const activeImg = flickityInstance.cells[index].element.querySelector("img");
+    //     if (activeImg) {
+    //         popupCaption.textContent = activeImg.title || "";
+    //     }
+    // }
 
-    // Закрытие попапа
     closeBtn.addEventListener("click", closePopup);
     popup.addEventListener("click", (e) => {
         if (e.target === popup) {
@@ -249,13 +257,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function closePopup() {
         popup.classList.remove("show");
 
-        // Уничтожаем Flickity перед очисткой
         if (flickityInstance) {
             flickityInstance.destroy();
             flickityInstance = null;
         }
 
-        // Очищаем контейнер
         popupSlider.innerHTML = "";
     }
 });
