@@ -175,11 +175,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 flickityInstance.select(0);
 
-                // updateCaption(flickityInstance.selectedIndex);
+                updateCaption(flickityInstance.selectedIndex);
 
-                // flickityInstance.on("change", function (index) {
-                //     updateCaption(index);
-                // });
+                flickityInstance.on("change", function (index) {
+                    updateCaption(index);
+                });
             }, 0);
 
             popup.classList.add("show");
@@ -236,23 +236,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 flickityInstance.select(0);
 
-                // updateCaption(flickityInstance.selectedIndex);
+                updateCaption(flickityInstance.selectedIndex);
 
-                // flickityInstance.on("change", function (index) {
-                //     updateCaption(index);
-                // });
+                flickityInstance.on("change", function (index) {
+                    updateCaption(index);
+                });
             }, 0);
 
             popup.classList.add("show");
         });
     });
 
-    // function updateCaption(index) {
-    //     const activeImg = flickityInstance.cells[index].element.querySelector("img");
-    //     if (activeImg) {
-    //         popupCaption.textContent = activeImg.title || "";
-    //     }
-    // }
+    function updateCaption(index) {
+        if (!flickityInstance || !flickityInstance.cells || flickityInstance.cells.length === 0) return;
+    
+        let activeCell = flickityInstance.cells[index]?.element;
+        if (!activeCell) return;
+    
+        let activeImg = activeCell.querySelector("img");
+        popupCaption.textContent = activeImg ? activeImg.title || "" : "";
+    }
 
     closeBtn.addEventListener("click", closePopup);
     popup.addEventListener("click", (e) => {
