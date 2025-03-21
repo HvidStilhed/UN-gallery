@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 itemContainer.classList.add("un-popup__slider-item");
 
                 const imgClone = document.createElement("img");
-                imgClone.src = image.src;
+                imgClone.src = image.dataset.image || image.src;
                 imgClone.alt = image.alt || "";
                 imgClone.title = image.title || "";
 
@@ -207,7 +207,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 itemContainer.classList.add("un-popup__slider-item");
 
                 const imgClone = document.createElement("img");
-                imgClone.src = slide.style.backgroundImage.slice(5, -2);
+
+                if (slide.dataset.image) {
+                    imgClone.src = slide.dataset.image;
+                } else if (slide.dataset.flickityBgLazyload) {
+                    imgClone.src = slide.dataset.flickityBgLazyload;
+                }
+                else {
+                    const bgImage = slide.style.backgroundImage;
+                    imgClone.src = bgImage.slice(5, -2);
+                }
                 imgClone.title = slide.title || "";
 
                 itemContainer.appendChild(imgClone);
