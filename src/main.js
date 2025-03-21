@@ -2,18 +2,24 @@ import './main.sass';
 import 'flickity/css/flickity.css';
 import Flickity from 'flickity';
 import 'flickity-bg-lazyload';
+import imagesLoaded from 'imagesloaded';
 
 var Masonry = require('masonry-layout');
 
 function initMasonry(container) {
-    if (container) {
-        return new Masonry(container, {
-            itemSelector: '.un-grid__item',
-            percentPosition: true,
-            gutter: 32
-        });
-    }
-    return null;
+    if (!container) return null;
+
+    let msnry = new Masonry(container, {
+        itemSelector: '.un-grid__item',
+        percentPosition: true,
+        gutter: 32
+    });
+
+    imagesLoaded(container, () => {
+        msnry.layout();
+    });
+
+    return msnry;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -77,11 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 flkty.destroy()
                 elem.style.opacity = 0
 
-                // Проверяем, когда `un-tab--active` стал видимым
                 setTimeout(() => {
                     let newGrid = targetTab.querySelector('.un-grid');
                     if (newGrid) {
                         msnry = initMasonry(newGrid);
+                        imagesLoaded(newGrid, () => {
+                            msnry.layout();
+                        });
                     }
                     
                     flkty = new Flickity( elem, {
@@ -126,25 +134,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const gallery = this.closest(".un-gallery");
             const images = Array.from(gallery.querySelectorAll("img"));
 
-            // Проверяем, существует ли старый слайдер, и удаляем его
             if (flickityInstance) {
                 flickityInstance.destroy();
                 flickityInstance = null;
             }
 
-            // Полностью очищаем контейнер перед вставкой новых изображений
             popupSlider.innerHTML = "";
 
-            // Ищем индекс текущего изображения
             const activeIndex = images.indexOf(this);
 
-            // Создаем новый массив, который сохраняет порядок, но ставит активное изображение в начало
             const reorderedImages = [
-                ...images.slice(activeIndex),  // Все изображения после активного
-                ...images.slice(0, activeIndex)  // Все изображения до активного
+                ...images.slice(activeIndex), 
+                ...images.slice(0, activeIndex)
             ];
 
-            // Добавляем изображения в слайдер
             reorderedImages.forEach((image) => {
                 const itemContainer = document.createElement("div");
                 itemContainer.classList.add("un-popup__slider-item");
@@ -158,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 popupSlider.appendChild(itemContainer);
             });
 
-            // Создаем новый экземпляр Flickity
             setTimeout(() => {
                 flickityInstance = new Flickity(popupSlider, {
                     cellAlign: "center",
@@ -171,19 +173,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     bgLazyLoad: 1
                 });
 
-                // Устанавливаем активное изображение
-                flickityInstance.select(0);  // Нажатое изображение становится первым
+                flickityInstance.select(0);
 
-                // Обновляем подпись активного изображения
                 // updateCaption(flickityInstance.selectedIndex);
 
-                // Слушаем событие смены слайда
                 // flickityInstance.on("change", function (index) {
                 //     updateCaption(index);
                 // });
             }, 0);
 
-            // Показываем попап
             popup.classList.add("show");
         });
     });
@@ -227,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     draggable: true
                 });
 
-                flickityInstance.select(0);  // Нажатое изображение становится первым
+                flickityInstance.select(0);
 
                 // updateCaption(flickityInstance.selectedIndex);
 
