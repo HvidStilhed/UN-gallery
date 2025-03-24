@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let grid = tab.querySelector('.un-grid')
                 msnry = initMasonry(grid);
             }
+            flkty.resize()
         });
     }
 
