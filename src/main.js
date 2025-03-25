@@ -44,15 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return msnry;
     }
 
-    // var elem = document.querySelector('.un-slider');
-    // var flkty = new Flickity( elem, {
-    //     pageDots: false,
-    //     wrapAround: true,
-    //     bgLazyLoad: 1
-    // });
-    // flkty.resize()
-    let flickityBtn = document.querySelectorAll('.flickity-button');
-
     let flickityInstance = null;
 
     let activeGrid = document.querySelector('.un-tab--active .un-grid');
@@ -140,16 +131,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (grid) {
                         setTimeout(() => {
-                            if (msnry) {
-                                msnry.destroy()
-                            }
                             msnry = initMasonry(grid);
                             imagesLoaded(grid, () => {
                                 msnry.layout();
                             });
                         }, 100);
                     }
-                    console.log(lastScrollPos)
+                    
                     window.scrollTo(0, lastScrollPos);
                 });
             });
