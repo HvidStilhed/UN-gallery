@@ -4,123 +4,182 @@ import Flickity from 'flickity';
 import 'flickity-bg-lazyload';
 import imagesLoaded from 'imagesloaded';
 
-var Masonry = require('masonry-layout');
-
-function initMasonry(container) {
-    if (!container) return null;
-
-    let msnry = new Masonry(container, {
-        itemSelector: '.un-grid__item',
-        percentPosition: true,
-        gutter: 32
-    });
-
-    imagesLoaded(container, () => {
-        msnry.layout();
-    });
-
-    return msnry;
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-    var elem = document.querySelector('.un-slider');
-    var flkty = new Flickity( elem, {
-        pageDots: false,
-        wrapAround: true,
-        bgLazyLoad: 1
-    });
-    flkty.resize()
+    let Masonry = require('masonry-layout');
+    let flickityInstances = new Map();
+
+    function initSliders() {
+        document.querySelectorAll('.un-slider').forEach(elem => {
+            let flkty = new Flickity(elem, {
+                pageDots: false,
+                wrapAround: true,
+                bgLazyLoad: 1
+            });
+
+            flickityInstances.set(elem, flkty);
+            flkty.resize();
+        });
+    }
+
+    function destroyFlickity(elem) {
+        if (flickityInstances.has(elem)) {
+            flickityInstances.get(elem).destroy();
+            flickityInstances.delete(elem);
+        }
+    }
+
+    function initMasonry(container) {
+        if (!container) return null;
+    
+        let msnry = new Masonry(container, {
+            itemSelector: '.un-grid__item',
+            percentPosition: true,
+            gutter: 32
+        });
+    
+        imagesLoaded(container, () => {
+            msnry.layout();
+        });
+    
+        return msnry;
+    }
+
+    // var elem = document.querySelector('.un-slider');
+    // var flkty = new Flickity( elem, {
+    //     pageDots: false,
+    //     wrapAround: true,
+    //     bgLazyLoad: 1
+    // });
+    // flkty.resize()
     let flickityBtn = document.querySelectorAll('.flickity-button');
 
     let flickityInstance = null;
 
     let activeGrid = document.querySelector('.un-tab--active .un-grid');
     let msnry = initMasonry(activeGrid);
+    let lastScrollPos = 0;
     
     initMasonry(activeGrid);
 
-    function flktyButtons(elem) {
-        flickityBtn.forEach(btn => {
+    function flktyButtons(flkty) {
+        let flickityBtns = flkty.element.querySelectorAll('.flickity-button');
+        
+        flickityBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                flickityBtn.forEach(btn => btn.style.opacity = '0');
-                flickityBtn.forEach(btn => btn.style.transition = 'none');
+                flickityBtns.forEach(btn => btn.style.opacity = '0');
+                flickityBtns.forEach(btn => btn.style.transition = 'none');
             });
         });
-    
-        elem.on( 'settle', function() {
-            flickityBtn.forEach(btn => btn.style.transition = '.3s');
-            flickityBtn.forEach(btn => btn.style.opacity = '1');
+
+        flkty.on('settle', function() {
+            flickityBtns.forEach(btn => btn.style.transition = '.3s');
+            flickityBtns.forEach(btn => btn.style.opacity = '1');
         });
-    
-        elem.on( 'dragStart', function() {
-            flickityBtn.forEach(btn => {
-                flickityBtn.forEach(btn => btn.style.opacity = '0');
-                flickityBtn.forEach(btn => btn.style.transition = 'none');
+
+        flkty.on('dragStart', function() {
+            flickityBtns.forEach(btn => {
+                btn.style.opacity = '0';
+                btn.style.transition = 'none';
             });
         });
     }
-    flktyButtons(flkty)
 
     function tabs() {
-        const tabLinks = document.querySelectorAll('.un-tabs__link');
+        const tabsWrap = document.querySelectorAll('.un-tabs')
         const tabContents = document.querySelectorAll('.un-tab');
+        
+        tabsWrap.forEach(tabWrap => {
+            const tabLinks = tabWrap.querySelectorAll('.un-tabs__link');
 
-        tabLinks.forEach((link, i) => {
-            if (i === 0) link.classList.add('un-tabs__link--active');
+            tabLinks.forEach((link, i) => {
+                if (i === 0) link.classList.add('un-tabs__link--active');
+    
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
 
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-
-                let targetId = link.getAttribute('href').substring(1);
-                let targetTab = document.getElementById(targetId);
-
-                tabLinks.forEach(link => link.classList.remove('un-tabs__link--active'));
-                tabContents.forEach(tab => tab.classList.remove('un-tab--active'));
-
-                link.classList.add('un-tabs__link--active');
-                targetTab.classList.add('un-tab--active');
-
-                flkty.destroy()
-                elem.style.opacity = 0
-
-                setTimeout(() => {
-                    let newGrid = targetTab.querySelector('.un-grid');
-                    if (newGrid) {
-                        msnry = initMasonry(newGrid);
-                        imagesLoaded(newGrid, () => {
-                            msnry.layout();
-                        });
-                    }
-                    
-                    flkty = new Flickity( elem, {
-                        pageDots: false,
-                        wrapAround: true,
-                        bgLazyLoad: 1
+                    lastScrollPos = window.scrollY;
+    
+                    let targetId = link.getAttribute('href').substring(1);
+                    let targetTab = document.getElementById(targetId);
+                    let category = targetTab.getAttribute('data-category');
+    
+                    tabLinks.forEach(link => link.classList.remove('un-tabs__link--active'));
+                    tabContents.forEach(tab => {
+                        if (tab.getAttribute('data-category') === category) {
+                            tab.classList.remove('un-tab--active');
+                        }
                     });
+    
+                    link.classList.add('un-tabs__link--active');
+                    targetTab.classList.add('un-tab--active');
 
-                    flkty.resize()
+                    let slider = targetTab.querySelector('.un-slider');
+                    let grid = targetTab.querySelector('.un-grid');
 
-                    setTimeout(() => {
-                        flickityBtn = document.querySelectorAll('.flickity-button');
-                        flktyButtons(flkty);
-                    }, 10);
+                    if (slider) {
+                        destroyFlickity(slider);
+                        slider.style.opacity = 0;
 
-                    elem.style.opacity = 1
-                    
-                }, 100);
+                        setTimeout(() => {
+                            let newFlkty = new Flickity(slider, {
+                                pageDots: false,
+                                wrapAround: true,
+                                bgLazyLoad: 1
+                            });
+    
+                            flickityInstances.set(slider, newFlkty);
+                            newFlkty.resize();
+    
+                            flktyButtons(newFlkty);
+    
+                            setTimeout(() => {
+                                slider.style.opacity = 1;
+                            }, 10);
+                        }, 100);
+                    }
+
+                    if (grid) {
+                        setTimeout(() => {
+                            if (msnry) {
+                                msnry.destroy()
+                            }
+                            msnry = initMasonry(grid);
+                            imagesLoaded(grid, () => {
+                                msnry.layout();
+                            });
+                        }, 100);
+                    }
+                    console.log(lastScrollPos)
+                    window.scrollTo(0, lastScrollPos);
+                });
             });
-        });
+        })
 
-        tabContents.forEach((tab, i) => {
-            if (i === 0) {
-                tab.classList.add('un-tab--active');
-                let grid = tab.querySelector('.un-grid')
-                msnry = initMasonry(grid);
+        const tabGroups = {};
+        tabContents.forEach(tab => {
+            let category = tab.getAttribute('data-category')
+
+            if (!tabGroups[category]) {
+                tabGroups[category] = tab;
             }
-            flkty.resize()
+            
+            Object.values(tabGroups).forEach((firstTab) => {
+                firstTab.classList.add('un-tab--active');
+                
+                let grid = firstTab.querySelector('.un-grid');
+                initMasonry(grid);
+
+                let slider = firstTab.querySelector('.un-slider');
+                if (slider && flickityInstances.has(slider)) {
+                    let flkty = flickityInstances.get(slider);
+                    flkty.resize();
+                    flktyButtons(flkty);
+                }
+            });
         });
     }
 
+    initSliders();
     tabs();
 
     const galleryItems = document.querySelectorAll(".un-grid__item img");
